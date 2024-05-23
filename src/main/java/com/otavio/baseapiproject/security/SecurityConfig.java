@@ -16,11 +16,13 @@ import org.springframework.security.web.context.SecurityContextRepository;
 public class SecurityConfig {
     private final SecurityContextRepository securityRepository;
     private final FilterAuthentication filterAuthentication;
+    private final UserAuthorization userAuthorization;
     @Bean
     public SecurityFilterChain config(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable);
         http.authorizeHttpRequests(authorizeRequests -> authorizeRequests
                 .requestMatchers(HttpMethod.POST, "/login").permitAll()
+                .requestMatchers(HttpMethod.GET, "/get").access(userAuthorization)
                 .anyRequest().authenticated()
         );
         http.securityContext((context) -> context.securityContextRepository(securityRepository));
